@@ -13,7 +13,8 @@
                     tasksList.innerHTML = '';
                     data.forEach(task => {
                         const li = document.createElement('li');
-                        li.textContent = `${task.name} - ${task.task} - ${task.progress}%`;
+                        const createdAt = new Date(task.created_at).toLocaleDateString();
+                        li.innerHTML = `${task.name} - ${task.task} - ${task.progress}% - Code: ${task.code} - Créé le: ${createdAt}`;
                         tasksList.appendChild(li);
                     });
                 });

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mettre à jour la progression</title>
+</head>
+<body>
+    <h1>Mettre à jour la progression</h1>
+    <form method="POST">
+        <label for="progress">Progression:</label>
+        <input type="range" id="progress" name="progress" value="{{ task.progress }}" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+        <output>{{ task.progress }}</output>%
+        <br>
+        <button type="submit">Mettre à jour</button>
+    </form>
+</body>
+</html>

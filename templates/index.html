@@ -10,7 +10,7 @@
     <a href="{{ url_for('add') }}">Ajouter une tâche</a>
     <ul>
         {% for task in tasks %}
-            <li>{{ task.name }} - {{ task.task }} - {{ task.progress }}% 
+            <li>{{ task.name }} - {{ task.task }} - {{ task.progress }}% - Code: {{ task.code }}
                 <a href="{{ url_for('edit', id=task.id) }}">Modifier</a>
             </li>
         {% endfor %}

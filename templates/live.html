@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des tâches en direct</title>
+    <script>
+        function fetchTasks() {
+            fetch('/tasks')
+                .then(response => response.json())
+                .then(data => {
+                    const tasksList = document.getElementById('tasks-list');
+                    tasksList.innerHTML = '';
+                    data.forEach(task => {
+                        const li = document.createElement('li');
+                        li.textContent = `${task.name} - ${task.task} - ${task.progress}%`;
+                        tasksList.appendChild(li);
+                    });
+                });
+        }
+
+        setInterval(fetchTasks, 5000); // Mettre à jour toutes les 5 secondes
+        window.onload = fetchTasks; // Charger les tâches au chargement de la page
+    </script>
+</head>
+<body>
+    <h1>Liste des tâches en direct</h1>
+    <ul id="tasks-list">
+        <!-- Les tâches seront insérées ici par JavaScript -->
+    </ul>
+</body>
+</html>

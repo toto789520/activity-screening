@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des tâches</title>
+</head>
+<body>
+    <h1>Liste des tâches</h1>
+    <a href="{{ url_for('add') }}">Ajouter une tâche</a>
+    <ul>
+        {% for task in tasks %}
+            <li>{{ task.name }} - {{ task.task }} - {{ task.progress }}% 
+                <a href="{{ url_for('edit', id=task.id) }}">Modifier</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

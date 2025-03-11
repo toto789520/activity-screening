@@ -6,6 +6,11 @@
     <title>Liste des tâches</title>
 </head>
 <body>
+    {% extends "base.html" %}
+
+    {% block title %}Liste des tâches{% endblock %}
+
+    {% block content %}
     <h1>Liste des tâches</h1>
     <a href="{{ url_for('add') }}">Ajouter une tâche</a>
     <ul>
@@ -15,5 +20,6 @@
             </li>
         {% endfor %}
     </ul>
+    {% endblock %}
 </body>
 </html>

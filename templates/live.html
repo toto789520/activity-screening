@@ -1,33 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des tâches en direct</title>
-    <script>
-        function fetchTasks() {
-            fetch('/tasks')
-                .then(response => response.json())
-                .then(data => {
-                    const tasksList = document.getElementById('tasks-list');
-                    tasksList.innerHTML = '';
-                    data.forEach(task => {
-                        const li = document.createElement('li');
-                        const createdAt = new Date(task.created_at).toLocaleDateString();
-                        li.innerHTML = `${task.name} - ${task.task} - ${task.progress}% - Code: ${task.code} - Créé le: ${createdAt}`;
-                        tasksList.appendChild(li);
-                    });
-                });
-        }
+{% extends "base.html" %}
 
-        setInterval(fetchTasks, 5000); // Mettre à jour toutes les 5 secondes
-        window.onload = fetchTasks; // Charger les tâches au chargement de la page
-    </script>
-</head>
-<body>
-    <h1>Liste des tâches en direct</h1>
-    <ul id="tasks-list">
-        <!-- Les tâches seront insérées ici par JavaScript -->
-    </ul>
-</body>
-</html>
+{% block title %}Liste des tâches en direct{% endblock %}
+
+{% block content %}
+<style>
+    .completed {
+        position: relative;
+        overflow: hidden;
+        font-size: 1.2em;
+    }
+
+    .completed::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: green;
+        animation: slideRight 2s forwards;
+        z-index: 0;
+    }
+
+    @keyframes slideRight {
+        from {
+            left: -100%;
+        }
+        to {
+            left: 100%;
+        }
+    }
+
+    .in-progress {
+        position: relative;
+        overflow: hidden;
+        font-size: 1.2em;
+    }
+
+    .in-progress::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background-color: orange;
+        animation: slideToProgress 2s forwards;
+        z-index: 0;
+    }
+
+    @keyframes slideToProgress {
+        from {
+            width: 0;
+        }
+        to {
+            width: var(--progress);
+        }
+    }
+
+    .in-progress span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .task-details {
+        float: right;
+        text-align: right;
+    }
+
+    .qr-code {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+        z-index: 10;
+    }
+</style>
+<script>
+    let previousTasks = [];
+
+    function fetchTasks() {
+        fetch('/tasks')
+            .then(response => response.json())
+            .then(data => {
+                const tasksList = document.getElementById('tasks-list');
+                const completedTasksList = document.getElementById('completed-tasks-list');
+                tasksList.innerHTML = '';
+                completedTasksList.innerHTML = '';
+                data.forEach(task => {
+                    const li = document.createElement('li');
+                    const createdAt = new Date(task.created_at).toLocaleDateString();
+                    li.innerHTML = `<span>${task.name} - ${task.task}</span><span class="task-details">${task.progress}% - Code: ${task.code} - Créé le: ${createdAt}</span>`;
+                    if (task.progress == 100) {
+                        li.classList.add('completed');
+                        completedTasksList.appendChild(li);
+                    } else {
+                        li.classList.add('in-progress');
+                        li.style.setProperty('--progress', `${task.progress}%`);
+                        tasksList.appendChild(li);
+                    }
+                });
+
+                if (JSON.stringify(data) !== JSON.stringify(previousTasks)) {
+                    document.querySelectorAll('.completed, .in-progress').forEach(el => {
+                        el.style.animation = 'none';
+                        el.offsetHeight; // trigger reflow
+                        el.style.animation = '';
+                    });
+                }
+
+                previousTasks = data;
+            });
+    }
+
+    setInterval(fetchTasks, 5000); // Mettre à jour toutes les 5 secondes
+    window.onload = fetchTasks; // Charger les tâches au chargement de la page
+</script>
+
+<h1>Liste des tâches en direct</h1>
+<ul id="tasks-list">
+    <!-- Les tâches seront insérées ici par JavaScript -->
+</ul>
+<h2>Tâches complétées</h2>
+<ul id="completed-tasks-list">
+    <!-- Les tâches complétées seront insérées ici par JavaScript -->
+</ul>
+<img src="{{ url_for('static', filename='qr_code.png') }}" alt="QR Code" class="qr-code">
+{% endblock %}

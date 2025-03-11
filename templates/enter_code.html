@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrer le code</title>
-</head>
-<body>
-    <h1>Entrer le code</h1>
-    <form method="POST">
-        <label for="code">Code:</label>
-        <input type="text" id="code" name="code" required>
-        <br>
-        <button type="submit">Soumettre</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Entrer le code{% endblock %}
+
+{% block content %}
+<h1>Entrer le code</h1>
+<form method="POST">
+    <label for="code">Code:</label>
+    <input type="text" id="code" name="code" required>
+    <br>
+    <button type="submit">Soumettre</button>
+</form>
+{% endblock %}

@@ -1,27 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier une tâche</title>
-</head>
-<body>
-    <h1>Modifier une tâche</h1>
-    <form method="POST">
-        <label for="name">Nom:</label>
-        <input type="text" id="name" name="name" value="{{ task.name }}" required>
-        <br>
-        <label for="task">Tâche:</label>
-        <input type="text" id="task" name="task" value="{{ task.task }}" required>
-        <br>
-        <label for="progress">Progression:</label>
-        <input type="range" id="progress" name="progress" value="{{ task.progress }}" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-        <output>{{ task.progress }}</output>%
-        <br>
-        <button type="submit">Modifier</button>
-    </form>
-    <form method="POST" action="{{ url_for('delete', id=task.id) }}">
-        <button type="submit">Supprimer</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Modifier une tâche{% endblock %}
+
+{% block content %}
+<h1>Modifier une tâche</h1>
+<form method="POST">
+    <label for="name">Nom:</label>
+    <input type="text" id="name" name="name" value="{{ task.name }}" required>
+    <br>
+    <label for="task">Tâche:</label>
+    <input type="text" id="task" name="task" value="{{ task.task }}" required>
+    <br>
+    <label for="progress">Progression:</label>
+    <input type="range" id="progress" name="progress" value="{{ task.progress }}" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+    <output>{{ task.progress }}</output>%
+    <br>
+    <button type="submit">Modifier</button>
+</form>
+<form method="POST" action="{{ url_for('delete', id=task.id) }}">
+    <button type="submit">Supprimer</button>
+</form>
+{% endblock %}

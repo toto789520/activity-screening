@@ -3,13 +3,29 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import random
 import string
+import qrcode
+import netifaces
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 db = SQLAlchemy(app)
 
+def get_local_ip():
+    interfaces = netifaces.interfaces()
+    for interface in interfaces:
+        addresses = netifaces.ifaddresses(interface)
+        if netifaces.AF_INET in addresses:
+            for address in addresses[netifaces.AF_INET]:
+                local_ip = address['addr']
+                print(f"L'adresse IP locale sur l'interface {interface} est : {local_ip}")
+                return local_ip
+
 def generate_code():
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    data = ("http://"+get_local_ip()+":5000/enter_code")
+    # Generate QR code
+    qr = qrcode.make(data)
+    # Save the QR code as an image file
+    return qr
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +34,15 @@ class Task(db.Model):
     progress = db.Column(db.Integer, nullable=False)
     code = db.Column(db.String(6), unique=True, nullable=False, default=generate_code)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+@app.before_request
+def generate_qr_code():
+    if not hasattr(app, 'qr_code_generated'):
+        with app.app_context():
+            url = url_for('enter_code', _external=True)
+            img = qrcode.make(url)
+            img.save('static/qr_code.png')
+            app.qr_code_generated = True
 
 @app.route('/')
 def index():

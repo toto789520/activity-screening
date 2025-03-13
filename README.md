@@ -12,8 +12,8 @@ Ce projet est une application web de gestion des tâches en temps réel, dévelo
 
 ## Prérequis
 
-- Python 3.x
-- pip (Python package installer)
+- Docker
+- Docker Compose
 
 ## Installation
 
@@ -23,24 +23,12 @@ Ce projet est une application web de gestion des tâches en temps réel, dévelo
     cd activity-screening
     ```
 
-2. Installez les dépendances :
+2. Construisez et démarrez les services Docker :
     ```bash
-    pip install -r requirements.txt
+    docker-compose up --build
     ```
 
-3. Créez la base de données :
-    ```bash
-    python create_db.py
-    ```
-
-## Utilisation
-
-1. Lancez l'application :
-    ```bash
-    python app.py
-    ```
-
-2. Ouvrez votre navigateur et accédez à `http://<votre_ip_locale>:5000` pour voir la liste des tâches.
+3. Ouvrez votre navigateur et accédez à `http://localhost:5000` pour voir la liste des tâches.
 
 ## Structure du projet
 

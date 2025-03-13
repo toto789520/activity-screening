@@ -8,6 +8,8 @@ import netifaces
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+# Add this line to suppress the FSADeprecationWarning
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 def get_local_ip():

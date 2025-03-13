@@ -78,3 +78,10 @@ body {
 .progress-bar-en-cours {
     background-color: orange;
 }
+
+.logo {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    max-height: 165px; /* Increased the size of the logo */
+}

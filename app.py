@@ -119,4 +119,6 @@ def confirmation():
     return render_template('confirmation.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print(get_local_ip())
+    print("server running")
+    app.run(host=get_local_ip(), port=5000, debug=True)

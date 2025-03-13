@@ -5,6 +5,8 @@ import random
 import string
 import qrcode
 import netifaces
+import os
+import sqlite3
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
@@ -28,6 +30,17 @@ def generate_code():
     qr = qrcode.make(data)
     # Save the QR code as an image file
     return qr
+
+def create_db_if_not_exists(db_path):
+    if not os.path.exists(db_path):
+        conn = sqlite3.connect(db_path)
+        # Ajoutez ici les commandes SQL pour créer les tables nécessaires
+        conn.execute('''CREATE TABLE IF NOT EXISTS example_table (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            name TEXT NOT NULL
+                        );''')
+        conn.commit()
+        conn.close()
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -121,6 +134,8 @@ def confirmation():
     return render_template('confirmation.html')
 
 if __name__ == '__main__':
+    db_path = 'db.sqlite3'
+    create_db_if_not_exists(db_path)
     print(get_local_ip())
     print("server running")
     app.run(host=get_local_ip(), port=5000, debug=True)

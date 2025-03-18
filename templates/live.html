@@ -15,6 +15,9 @@
                 const completedTasksList = document.getElementById('completed-tasks-list');
                 tasksList.innerHTML = '';
                 completedTasksList.innerHTML = '';
+                let hasCompletedTasks = false;
+                let hasInProgressTasks = false;
+
                 data.forEach(task => {
                     const li = document.createElement('li');
                     const createdAt = new Date(task.created_at).toLocaleDateString();
@@ -30,12 +33,32 @@
                     if (task.progress == 100) {
                         li.classList.add('completed');
                         completedTasksList.appendChild(li);
+                        hasCompletedTasks = true;
                     } else {
                         li.classList.add('in-progress');
                         li.style.setProperty('--progress', `${task.progress}%`);
                         tasksList.appendChild(li);
+                        hasInProgressTasks = true;
                     }
                 });
+
+                if (!hasCompletedTasks) {
+                    const li = document.createElement('li');
+                    li.classList.add('completed'); // Apply the same styles as completed tasks
+                    li.innerHTML = `
+                        <span class="no-status">Aucune tâche finie</span> <!-- Custom style for this case -->
+                    `;
+                    completedTasksList.appendChild(li);
+                }
+
+                if (!hasInProgressTasks) {
+                    const li = document.createElement('li');
+                    li.classList.add('in-progress'); // Apply the same styles as in-progress tasks
+                    li.innerHTML = `
+                        <span class="no-status">Aucune tâche en cours</span> <!-- Custom style for this case -->
+                    `;
+                    tasksList.appendChild(li);
+                }
 
                 previousTasks = data;
             });

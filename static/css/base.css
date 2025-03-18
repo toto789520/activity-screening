@@ -22,3 +22,36 @@ footer {
     width: 100%;
     bottom: 0;
 }
+
+
+
+.center-container button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 1em 2em;
+    margin-top: 0.5em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.center-container button:hover {
+    background-color: #555;
+}
+
+.add-task-btn {
+    background-color: #333;
+    color: black;
+    border: none;
+    padding: 1em 2em;
+    margin-top: 0.5em;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.add-task-btn:hover {
+    background-color: #555;
+}

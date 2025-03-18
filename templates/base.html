@@ -11,10 +11,11 @@
         <h1>Gestion des tâches 📋</h1>
     </header>
     <main>
-        {% block content %}{% endblock %}
+        <div class="center-container">
+            {% block content %}
+            <button class="add-task-btn">Ajouter une tâche</button>
+            {% endblock %}
+        </div>
     </main>
-    <footer>
-        <p>&copy; 2023 Gestion des tâches</p>
-    </footer>
 </body>
 </html>

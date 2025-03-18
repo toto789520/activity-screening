@@ -81,7 +81,13 @@ body {
 
 .logo {
     position: absolute;
-    top: 0px;
+    top: -10px;
     left: 10px;
-    max-height: 165px; /* Increased the size of the logo */
+    max-height: 450px; /* Increased the size of the logo */
+}
+
+.no-status {
+    font-size: 1.5em; /* Same font size as other tasks */
+    color: gray; /* Custom color for "Aucune tâche finie" and "Aucune tâche en cours" */
+    margin-left: 0.5em;
 }

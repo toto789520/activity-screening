@@ -26,7 +26,16 @@
             <tr>
                 <td><input type="checkbox" name="users" value="{{ user.id }}" {% if user in task.users %}checked{% endif %}></td>
                 <td>{{ user.first_name }} {{ user.last_name }} - {{ user.class_name }}</td>
-                <td><input type="text" name="subtasks_{{ user.id }}" placeholder="Nom de la sous-tâche,Progression initiale"></td>
+                <td>
+                    {% set user_subtasks = task.subtasks | selectattr("users", "contains", user) | list %}
+                    {% if user_subtasks %}
+                        {% for subtask in user_subtasks %}
+                        <input type="text" name="subtasks_{{ user.id }}" value="{{ subtask.name }},{{ subtask.progress }}">
+                        {% endfor %}
+                    {% else %}
+                        <input type="text" name="subtasks_{{ user.id }}" placeholder="Nom de la sous-tâche,Progression initiale">
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from datetime import datetime
 import random
 import string
@@ -14,7 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 # Add this line to suppress the FSADeprecationWarning
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)  # Initialize Flask-Migrate
 
 def get_local_ip():
     interfaces = netifaces.interfaces()
@@ -56,14 +54,14 @@ class SubTask(db.Model):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    task = db.Column(db.String(100), nullable=False)
-    progress = db.Column(db.Integer, nullable=False, default=0)
-    code = db.Column(db.String(100), unique=True, nullable=False)
+    task = db.Column(db.String(200), nullable=False)
+    progress = db.Column(db.Integer, nullable=False)
+    code = db.Column(db.String(6), unique=True, nullable=False, default=generate_code)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     users = db.relationship('User', secondary=task_users, lazy='subquery',
         backref=db.backref('tasks', lazy=True))
     subtasks = db.relationship('SubTask', backref='task', lazy=True)
-    image = db.Column(db.String(100), nullable=True)
+    image = db.Column(db.String(150))
 
     def calculate_global_progress(self):
         if not self.users:
@@ -143,6 +141,15 @@ def add():
         for user_id in user_ids:
             user = User.query.get(user_id)
             new_task.users.append(user)
+            subtask_data = request.form.get(f'subtasks_{user_id}')
+            if subtask_data and ',' in subtask_data:
+                try:
+                    subtask_name, subtask_progress = subtask_data.split(',', 1)
+                    subtask = SubTask(name=subtask_name.strip(), progress=int(subtask_progress.strip()), task=new_task)
+                    new_task.subtasks.append(subtask)
+                    print(f"Subtask added: {subtask_name} with progress {subtask_progress}")
+                except ValueError:
+                    print(f"Invalid subtask data for user {user_id}: {subtask_data}")
         db.session.add(new_task)
         db.session.commit()
         generate_code(code)
@@ -160,9 +167,19 @@ def edit(id):
         task.task = request.form['task']
         user_ids = request.form.getlist('users')
         task.users = []
+        task.subtasks = []  # Clear existing subtasks to avoid duplicates
         for user_id in user_ids:
             user = User.query.get(user_id)
             task.users.append(user)
+            subtask_data = request.form.get(f'subtasks_{user_id}')
+            if subtask_data and ',' in subtask_data:
+                try:
+                    subtask_name, subtask_progress = subtask_data.split(',', 1)
+                    subtask = SubTask(name=subtask_name.strip(), progress=int(subtask_progress.strip()), task=task)
+                    task.subtasks.append(subtask)
+                    print(f"Subtask updated: {subtask_name} with progress {subtask_progress}")
+                except ValueError:
+                    print(f"Invalid subtask data for user {user_id}: {subtask_data}")
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('edit.html', task=task, users=users)
@@ -188,7 +205,18 @@ def live():
             'task': task.task,
             'progress': task.progress,
             'global_progress': task.calculate_global_progress(),
-            'users': [{'first_name': user.first_name, 'last_name': user.last_name, 'progress': user.get_task_progress(task.id)} for user in task.users],
+            'users': [
+                {
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'progress': user.get_task_progress(task.id),
+                    'subtasks': [
+                        {'name': subtask.name, 'progress': subtask.progress}
+                        for subtask in task.subtasks if user in subtask.users
+                    ]
+                }
+                for user in task.users
+            ],
             'image': task.image
         }
         tasks_with_user_progress.append(task_info)
@@ -289,7 +317,6 @@ def delete_user(id):
     return redirect(url_for('users'))
 
 if __name__ == '__main__':
-    os.environ['FLASK_APP'] = 'app.py'
     with app.app_context():
         recreate_qr_codes()
     print(get_local_ip())

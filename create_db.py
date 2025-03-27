@@ -33,8 +33,20 @@ with app.app_context():
         db.session.add(ticket1)
         db.session.add(ticket2)
         db.session.commit()
+<<<<<<< Updated upstream
 
     # Validate 'title' key when processing tasks
+=======
+    if not Task.query.first():
+        task1 = Task(name='Tâche 1', task='Description de la tâche 1', progress=0, code='ABC123', image='static/task1.png')
+        user1 = User.query.filter_by(first_name='John').first()
+        subtask1 = SubTask(name='Sous-tâche 1', progress=50, task=task1)
+        subtask1.users.append(user1)
+        db.session.add(task1)
+        db.session.commit()
+        print("Task and subtask added for testing.")
+    # Générer un QR code pour chaque tâche
+>>>>>>> Stashed changes
     tasks = Task.query.all()
     for task in tasks:
         if not task.title:

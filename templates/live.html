@@ -82,7 +82,25 @@
 </script>
 <h1>Liste des tâches en direct</h1>
 <ul id="tasks-list">
-    <!-- Les tâches seront insérées ici par JavaScript -->
+    {% for task in tasks %}
+    <li>
+        <h2>{{ task.name }}</h2>
+        <p>{{ task.task }}</p>
+        <p>Progression globale: {{ task.global_progress }}%</p>
+        <ul>
+            {% for user in task.users %}
+            <li>
+                <strong>{{ user.first_name }} {{ user.last_name }}</strong> - {{ user.progress }}%
+                <ul>
+                    {% for subtask in user.subtasks %}
+                    <li>{{ subtask.name }} - {{ subtask.progress }}%</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
 </ul>
 <h1>Tâches complétées</h1>
 <ul id="completed-tasks-list">

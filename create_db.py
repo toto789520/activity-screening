@@ -3,11 +3,15 @@ from app import User, AvailableTicket, Task, SubTask, TaskUserProgress, SubTaskU
 import qrcode
 import os
 
+
 # Add this line to suppress the FSADeprecationWarning
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 with app.app_context():
+    # Créer la base de données
     db.create_all()
+    
+
     # Ajouter des utilisateurs et des tickets disponibles pour les tests
     if not User.query.first():
         user1 = User(first_name='John', last_name='Doe', email='john.doe@example.com', class_name='Classe A')

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime
 import random
 import string
@@ -13,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 # Add this line to suppress the FSADeprecationWarning
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)  # Initialize Flask-Migrate
 
 def get_local_ip():
     interfaces = netifaces.interfaces()
@@ -54,14 +56,14 @@ class SubTask(db.Model):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    task = db.Column(db.String(200), nullable=False)
-    progress = db.Column(db.Integer, nullable=False)
-    code = db.Column(db.String(6), unique=True, nullable=False, default=generate_code)
+    task = db.Column(db.String(100), nullable=False)
+    progress = db.Column(db.Integer, nullable=False, default=0)
+    code = db.Column(db.String(100), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     users = db.relationship('User', secondary=task_users, lazy='subquery',
         backref=db.backref('tasks', lazy=True))
     subtasks = db.relationship('SubTask', backref='task', lazy=True)
-    image = db.Column(db.String(150))
+    image = db.Column(db.String(100), nullable=True)
 
     def calculate_global_progress(self):
         if not self.users:
@@ -285,6 +287,7 @@ def delete_user(id):
     return redirect(url_for('users'))
 
 if __name__ == '__main__':
+    os.environ['FLASK_APP'] = 'app.py'
     with app.app_context():
         recreate_qr_codes()
     print(get_local_ip())

@@ -4,11 +4,9 @@
 
 {% block content %}
 <h1>Mettre à jour la progression</h1>
-<form method="POST">
+<form method="POST" action="{{ url_for('update_progress_page', code=task.code) }}">
     <label for="progress">Progression:</label>
-    <input type="range" id="progress" name="progress" value="{{ task.progress }}" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-    <output>{{ task.progress }}</output>%
-    <br>
+    <input type="number" name="progress" id="progress" value="{{ task.progress }}" min="0" max="100" required>
     <button type="submit">Mettre à jour</button>
 </form>
 {% endblock %}

@@ -38,13 +38,15 @@ body {
     text-align: right;
 }
 
-.qr-code {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
+.image {
     width: 100px;
     height: 100px;
-    z-index: 10;
+    margin-right: 20px; /* Added margin to separate image from text */
+}
+
+.qr-code {
+    width: 100px;
+    height: 100px;
 }
 
 .status-fini {
@@ -90,4 +92,10 @@ body {
     font-size: 1.5em; /* Same font size as other tasks */
     color: gray; /* Custom color for "Aucune tâche finie" and "Aucune tâche en cours" */
     margin-left: 0.5em;
+}
+
+.global-progress {
+    font-size: 1.2em;
+    color: blue;
+    margin-top: 10px;
 }

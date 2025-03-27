@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Ajouter un ticket{% endblock %}
+
+{% block content %}
+<h1>Ajouter un ticket</h1>
+<form method="POST">
+    <label for="title">Titre:</label>
+    <input type="text" name="title" id="title" required>
+    <label for="image">Image (URL):</label>
+    <input type="text" name="image" id="image" required>
+    <label for="description">Description:</label>
+    <textarea name="description" id="description" required></textarea>
+    <button type="submit">Ajouter</button>
+    <a href="{{ url_for('available_tickets') }}">Annuler</a>
+</form>
+{% endblock %}

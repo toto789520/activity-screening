@@ -21,6 +21,10 @@
             </li>
         {% endfor %}
     </ul>
+    <h1>Utilisateurs</h1>
+    <a href="{{ url_for('users') }}">Voir les utilisateurs</a>
+    <h1>Tickets disponibles</h1>
+    <a href="{{ url_for('available_tickets') }}">Voir les tickets disponibles</a>
     {% endblock %}
 </body>
 </html>

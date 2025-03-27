@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier la progression{% endblock %}
+
+{% block content %}
+<h1>Modifier la progression de la tâche</h1>
+<form method="POST" action="{{ url_for('update_progress', code=task.code) }}">
+    <label for="user_id">Utilisateur:</label>
+    <select name="user_id" id="user_id" required>
+        {% for user in task.users %}
+            <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }} - {{ user.class_name }}</option>
+        {% endfor %}
+    </select>
+    <label for="progress">Progression:</label>
+    <input type="number" name="progress" id="progress" required>
+    <button type="submit">Mettre à jour</button>
+</form>
+{% endblock %}

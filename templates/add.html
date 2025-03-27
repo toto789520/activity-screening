@@ -5,15 +5,47 @@
 {% block content %}
 <h1>Ajouter une tâche</h1>
 <form method="POST">
-    <label for="name">Nom:</label>
-    <input type="text" id="name" name="name" required>
-    <br>
-    <label for="task">Tâche:</label>
-    <input type="text" id="task" name="task" required>
-    <br>
-    <label for="progress">Progression:</label>
-    <input type="number" id="progress" name="progress" value="0" min="0" max="100" required>
-    <br>
+    <label for="name">Nom de la tâche:</label>
+    <select name="name" id="name" onchange="updateTaskDescription()">
+        {% for ticket in tickets %}
+            <option value="{{ ticket.title }}" data-description="{{ ticket.description }}" image="{{ ticket.image}}">{{ ticket.title }}</option>
+        {% endfor %}
+    </select>
+    <label for="task">Description de la tâche:</label>
+    <input type="text" name="task" id="task">
+    <label for="image">Image de la tâche:</label>
+    <input type="text" name="image" id="image">
+    <label for="users">Utilisateurs:</label>
+    <table>
+        <thead>
+            <tr>
+                <th>Case à cocher</th>
+                <th>Nom</th>
+                <th>Sous-tâche</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><input type="checkbox" name="users" value="{{ user.id }}"></td>
+                <td>{{ user.first_name }} {{ user.last_name }} - {{ user.class_name }}</td>
+                <td><input type="text" name="subtasks_{{ user.id }}" placeholder="Nom de la sous-tâche,Progression initiale"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <button type="submit">Ajouter</button>
 </form>
+
+<script>
+    function updateTaskDescription() {
+        const ticketSelect = document.getElementById('name');
+        const selectedOption = ticketSelect.options[ticketSelect.selectedIndex];
+        const description = selectedOption.getAttribute('data-description');
+        document.getElementById('task').value = description;
+    }
+
+    // Initialiser la description de la tâche lors du chargement de la page
+    window.onload = updateTaskDescription;
+</script>
 {% endblock %}

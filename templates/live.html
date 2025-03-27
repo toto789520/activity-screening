@@ -21,22 +21,35 @@
                 data.forEach(task => {
                     const li = document.createElement('li');
                     const createdAt = new Date(task.created_at).toLocaleDateString();
-                    const status = task.progress == 100 ? 'fini' : 'en cours';
-                    const statusClass = task.progress == 100 ? 'status-fini' : 'status-en-cours';
-                    const progressBarClass = task.progress == 100 ? 'progress-bar-fini' : 'progress-bar-en-cours';
+                    const status = task.global_progress == 100 ? 'fini' : 'en cours';
+                    const statusClass = task.global_progress == 100 ? 'status-fini' : 'status-en-cours';
+                    const progressBarClass = task.global_progress == 100 ? 'progress-bar-fini' : 'progress-bar-en-cours';
+                    const users = task.users ? task.users.map(user => `
+                        <div>
+                            <span>${user.first_name} ${user.last_name} (${user.class_name}) - ${user.progress}%</span>
+                            <div class="progress-bar ${progressBarClass}" style="width: ${user.progress}%;"></div>
+                            ${user.subtasks ? user.subtasks.map(subtask => `
+                                <div>
+                                    <span>${subtask.name} - ${subtask.progress}%</span>
+                                    <div class="progress-bar ${progressBarClass}" style="width: ${subtask.progress}%;"></div>
+                                </div>
+                            `).join('') : ''}
+                        </div>
+                    `).join('') : '';
                     li.innerHTML = `
                         <span class="${statusClass}">${status}</span>
                         <span>${task.name} - ${task.task}</span>
-                        <span class="task-details">${task.progress}% - Code: ${task.code} - Créé le: ${createdAt}</span>
-                        <div class="progress-bar ${progressBarClass}" style="width: ${task.progress}%;"></div>
+                        <span class="task-details"><img src"${task.image}" class="image"><img src="../static/qr_codes/${task.code}.png" alt="QR Code" class="qr-code"></span>
+                        <div class="task-users">${users}</div>
+                        <div class="global-progress">Progression globale: ${task.global_progress}%</div>
                     `;
-                    if (task.progress == 100) {
+                    if (task.global_progress == 100) {
                         li.classList.add('completed');
                         completedTasksList.appendChild(li);
                         hasCompletedTasks = true;
                     } else {
                         li.classList.add('in-progress');
-                        li.style.setProperty('--progress', `${task.progress}%`);
+                        li.style.setProperty('--progress', `${task.global_progress}%`);
                         tasksList.appendChild(li);
                         hasInProgressTasks = true;
                     }
@@ -67,8 +80,6 @@
     setInterval(fetchTasks, 5000); // Mettre à jour toutes les 5 secondes
     window.onload = fetchTasks; // Charger les tâches au chargement de la page
 </script>
-
-<img src="{{ url_for('static', filename='logo_saint_gab.png') }}" alt="Logo Saint Gab" class="logo">
 <h1>Liste des tâches en direct</h1>
 <ul id="tasks-list">
     <!-- Les tâches seront insérées ici par JavaScript -->
@@ -77,5 +88,4 @@
 <ul id="completed-tasks-list">
     <!-- Les tâches complétées seront insérées ici par JavaScript -->
 </ul>
-<img src="{{ url_for('static', filename='qr_code.png') }}" alt="QR Code" class="qr-code">
 {% endblock %}

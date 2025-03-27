@@ -5,6 +5,9 @@
 {% block content %}
 <h1>Modifier une tâche</h1>
 <form method="POST">
+    <label for="title">Titre du ticket:</label>
+    <input type="text" name="title" id="title" value="{{ ticket.title }}" required>
+
     <label for="name">Nom de la tâche:</label>
     <input type="text" name="name" id="name" value="{{ task.name }}" required>
     <label for="task">Description de la tâche:</label>

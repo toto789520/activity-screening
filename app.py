@@ -250,15 +250,17 @@ def delete_ticket(id):
     db.session.commit()
     return redirect(url_for('available_tickets'))
 
-@app.route('/edit_ticket/<int:id>', methods=['POST'])
+@app.route('/edit_ticket/<int:id>', methods=['GET', 'POST'])
 def edit_ticket(id):
     ticket = AvailableTicket.query.get_or_404(id)
     if request.method == 'POST':
-        ticket.title = request.form['title']
-        ticket.image = request.form['image']
-        ticket.description = request.form['description']
+        # Ensure the form contains the required fields
+        ticket.title = request.form.get('title', ticket.title)
+        ticket.image = request.form.get('image', ticket.image)
+        ticket.description = request.form.get('description', ticket.description)
         db.session.commit()
         return redirect(url_for('available_tickets'))
+    # Render the edit_ticket.html template for GET requests
     return render_template('edit_ticket.html', ticket=ticket)
 
 @app.route('/task/<string:code>')

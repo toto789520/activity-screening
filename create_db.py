@@ -20,13 +20,24 @@ with app.app_context():
         db.session.add(user2)
         db.session.commit()
     if not AvailableTicket.query.first():
-        ticket1 = AvailableTicket(title='Ticket 1', image='static/ticket1.png', description='Description du ticket 1')
-        ticket2 = AvailableTicket(title='Ticket 2', image='static/ticket2.png', description='Description du ticket 2')
+        ticket1 = AvailableTicket(
+            title='Ticket 1', 
+            image='static/ticket1.png', 
+            description='Description du ticket 1'
+        )
+        ticket2 = AvailableTicket(
+            title='Ticket 2', 
+            image='static/ticket2.png', 
+            description='Description du ticket 2'
+        )
         db.session.add(ticket1)
         db.session.add(ticket2)
         db.session.commit()
-    # Générer un QR code pour chaque tâche
+
+    # Validate 'title' key when processing tasks
     tasks = Task.query.all()
     for task in tasks:
+        if not task.title:
+            raise ValueError("Task is missing a 'title' key.")
         qr = qrcode.make(f"http://{get_local_ip()}:5000/task/{task.code}")
         qr.save(os.path.join('static', 'qr_codes', f'{task.code}.png'))

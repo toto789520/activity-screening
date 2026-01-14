@@ -322,4 +322,4 @@ if __name__ == '__main__':
         recreate_qr_codes()
     print(get_local_ip())
     print("server running")
-    app.run(host=get_local_ip(), port=5000, debug=True)
+    app.run(host=get_local_ip(), port=5000, debug=False)

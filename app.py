@@ -101,6 +101,10 @@ class AvailableTicket(db.Model):
 def index():
     tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
+    
+@app.route('/ping')
+def ping():
+    return "pong"
 
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():

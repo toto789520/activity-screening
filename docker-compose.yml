@@ -8,5 +8,5 @@ services:
     volumes:
       - .:/app
     environment:
-      - FLASK_ENV=development
+      - FLASK_ENV=prod
     command: python app.py

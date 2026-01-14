@@ -322,8 +322,12 @@ def delete_user(id):
     return redirect(url_for('users'))
 
 if __name__ == '__main__':
+    # Force production settings - override any environment variables
+    os.environ['FLASK_ENV'] = 'production'
+    os.environ['FLASK_DEBUG'] = '0'
+    
     with app.app_context():
         recreate_qr_codes()
     print("server running")
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 

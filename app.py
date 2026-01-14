@@ -7,7 +7,7 @@ import qrcode
 import netifaces
 import os
 import sqlite3
-
+import shlex
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 # Add this line to suppress the FSADeprecationWarning
@@ -154,7 +154,8 @@ def add():
         db.session.commit()
         generate_code(code)
         # Annoncer automatiquement le ticket
-        os.system(f'say "Nouveau ticket disponible: {name}"')
+        safe_name = shlex.quote(name)
+        os.system(f'say "Nouveau ticket disponible: {safe_name}"')
         return redirect(url_for('index'))
     return render_template('add.html', users=users, tickets=tickets)
 

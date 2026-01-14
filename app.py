@@ -322,12 +322,14 @@ def delete_user(id):
     return redirect(url_for('users'))
 
 if __name__ == '__main__':
-    # Force production settings - override any environment variables
+    # Force production settings - prevents Coolify env vars from enabling debug mode
+    # This is necessary because FLASK_ENV=development or FLASK_DEBUG=1 would override debug=False
     os.environ['FLASK_ENV'] = 'production'
     os.environ['FLASK_DEBUG'] = '0'
     
     with app.app_context():
         recreate_qr_codes()
     print("server running")
+    # Explicitly disable debug and reloader for production deployment
     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 

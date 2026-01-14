@@ -320,6 +320,6 @@ def delete_user(id):
 if __name__ == '__main__':
     with app.app_context():
         recreate_qr_codes()
-    print(get_local_ip())
     print("server running")
     app.run(host="0.0.0.0", port=5000, debug=False)
+
